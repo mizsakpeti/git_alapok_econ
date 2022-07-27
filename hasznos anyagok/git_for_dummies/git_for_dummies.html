@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Table of contents</title>
+        <style>
+</style>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+                max-width: 760px;
+	            margin: 0 auto; 
+	            float: none; 
+            }
+        </style>
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        
+        <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+        
+    </head>
+    <body class="vscode-light">
+        <h1 id="table-of-contents">Table of contents</h1>
+<ul>
+<li><a href="#table-of-contents">Table of contents</a></li>
+<li><a href="#basics">Basics</a></li>
+<li><a href="#basic-overview-of-git-structure">Basic overview of git structure</a>
+<ul>
+<li><a href="#branches">Branches</a>
+<ul>
+<li><a href="#use-cases-of-branches">Use cases of branches</a>
+<ul>
+<li><a href="#making-a-new-branch-out-of-a-previous-commit">Making a new branch out of a previous commit</a></li>
+<li><a href="#making-a-branch-to-save-work-before-a-rebase-or-reset">Making a branch to save work before a rebase or reset</a></li>
+<li><a href="#adding-a-single-commit-from-another-branch-to-you-current-branch">Adding a single commit from another branch to you current branch</a></li>
+<li><a href="#merging-changes-from-one-branch-to-another">Merging changes from one branch to another</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#remote-tracking-branches">Remote tracking branches</a>
+<ul>
+<li><a href="#using-remote-tracking-branches">Using remote tracking branches</a></li>
+<li><a href="#hard-reset-with-remote-tracking-branches">Hard reset with remote tracking branches</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#basic-commands">Basic commands</a></li>
+<li><a href="#advanced-git-commands">&quot;Advanced&quot; git commands</a>
+<ul>
+<li><a href="#changing-commit-history-interactive-rebase">Changing commit history: interactive rebase</a>
+<ul>
+<li><a href="#before-rebasing">Before rebasing</a></li>
+<li><a href="#interactive-rebase">Interactive rebase</a></li>
+<li><a href="#after-the-rebase">After the rebase</a></li>
+</ul>
+</li>
+<li><a href="#adding-further-changes-to-last-commit">Adding further changes to last commit</a></li>
+<li><a href="#discard-last-n-commits">Discard last n commits</a></li>
+</ul>
+</li>
+<li><a href="#set-default-editor">Set default editor</a>
+<ul>
+<li><a href="#set-default-merge-tool-and-diff-tool">Set default merge tool and diff tool</a></li>
+</ul>
+</li>
+<li><a href="#merge-conflicts">Merge conflicts</a></li>
+</ul>
+<h1 id="basics">Basics</h1>
+<p>Git is a distributed version-control system, that lets you track changes in the files
+of your project. In this overview we will look at most of the basic
+features of git and some advanced ones aswell. Git is command-line
+driven, but there are also some GUI applications for working with it.
+We will mostly look at only the command-line commands for working with git.</p>
+<p>The distributed in the distributed version-control system means, that everyone
+working on a project has a full-fledged copy of the history and files of the
+project. Therefore, if something goes wrong with the remote server, its not a big
+deal, because everyone has everything locally aswell.</p>
+<p>Git is not just useful to collaborate with people on a project,
+but it can also be used to just track your own project, that you
+work on single handedly. If you are doing this, working solo on a project,
+everything is the same as working on a bigger project with multiple people.
+This is because git is a distributed version-control system, an it doesn't
+really care how many people contribute to a project.</p>
+<p>Therefore, I strongly advise that you track all of you scripts/project using git.
+When you make a new script, the first thing that should come to your mind is:</p>
+<pre><code class="language-conf"><code><div>$ git init
+</div></code></code></pre>
+<h1 id="basic-overview-of-git-structure">Basic overview of git structure</h1>
+<p>In git, you track your projects using a repository. There are two types of repositories. One is bare,
+the other one is local (non-bare). You use a local repository to track you files locally, and then you push your
+changes to the bare repository. The local repository is basically a folder named .git in your project. You initiate this
+.git folder using the following command:</p>
+<pre><code class="language-conf"><code><div>$ git init
+</div></code></code></pre>
+<p>After you do this, your .git folder is created, and it is ready to track the changes that happen in your project.
+You can track your changes by committing them to your local repository. A commit is a set of changes in some files,
+together with a commit message. The commit message should state what happened with these files since they have been last
+committed. A commit consists of two steps. First, you need to specify which files you wish to include in your commit, then
+you need to commit these files. You specify the files that need to be committed by using the <strong>git add</strong> command. Using this
+command you move files to the staging area. The files that are in the staging area will be included in your commit.
+As you see you can have several files in a single commit. This is useful, because you should make commits, that
+in some sense have a coherent meaning. This usually means that you modify more than one file, but the update in your project
+can be stated with a single sentence.</p>
+<p>After you staged you files, you should commit them using the <strong>git commit</strong> command.
+After you made the commit, you have saved the changes in your files to your .git repository.
+This is great, because after this point, even if you mess something up, you can always revert to this
+version of your project.</p>
+<p>For example, if you delete your tracked file from you file system permanently,
+you can still get back the contents of that file from your git repository, because the last version of your
+project was saved inside the .git folder with your commit.<br>
+Also, when you start changing your file you will be able to see what is a new change, and what was already present
+in the last commit. Modern text editors have some sort of support for git. For example, if you use VS Code, on the left hand side of your
+text area, next to the line numbers, the editor has a line with different colors, that state what has happened to that line. A green
+line indicates something that is completely new, a blue line indicates something that was present before, but got changed, and a
+red mark states that something got deleted from there.</p>
+<p>If you work together with people on a project, then you need a remote repository, where you can share
+your work. A remote repository is a bare repository, that contains the history of your project. You can create a bare repository
+with the following command:</p>
+<pre><code class="language-conf"><code><div>$ git init --bare
+</div></code></code></pre>
+<p>The remote repository will be the place that you push your changes to, and the place that you pull from.
+Pushing means, that you upload your commits to the remote repository, so people can access them. Pulling means,
+that you download other peoples changes to your local repository, so you can work on the freshest version of
+the project. To add a remote repository to your project (if you don't already have one) use the following command:</p>
+<pre><code class="language-conf"><code><div>$ git remote add origin {URL}
+</div></code></code></pre>
+<p>where {URL} is the URL to your remote (bare) repository. This can be a http
+link, an ssh address, or just a path in your file system. After doing this, you can push to and pull from this remote branch
+with the following commands:</p>
+<pre><code class="language-conf"><code><div>$ git pull origin master
+$ git push origin master
+</div></code></code></pre>
+<p>The first command pulls data from the origin remote repo's master branch to the current branch that is checked out.
+See more on branches in <a href="#branches">Branches</a>
+The second command pushes data from your local master branch to the remote master branch. If you wish to push from
+your local <em>some_other_branch</em> to the remote master branch, do this instead:</p>
+<pre><code class="language-conf"><code><div>$ git push origin some_other_branch:master
+</div></code></code></pre>
+<p>You can only push changes to the remote repo, if your local repo has
+all the commits that is already present in the remote repo. This is because otherwise, the commit history / structure
+of your local repo and remote repo would differ, and that is not permitted. Therefore, you first need to pull in the changes
+from the remote repo, and after you pulled in these changes, can you push your changes to the remote repo.</p>
+<p>When you pull the changes from the remote repo, a merge conflict can occur. See more on this in <a href="#merge-conflicts">Merge conflicts</a>.</p>
+<h2 id="branches">Branches</h2>
+<p>A branch in git is basically an independent line of development. It contains a series of commits chained together.
+When you make a commit, then you update the state / history of the branch that is checked out. At any point in time,
+you can make a new branch from an existing one with the following command:</p>
+<pre><code class="language-conf"><code><div>$ git branch name_for_your_new_branch
+</div></code></code></pre>
+<p>You can step into this branch (checkout the branch) with the following command:</p>
+<pre><code class="language-conf"><code><div>$ git checkout name_for_your_new_branch
+</div></code></code></pre>
+<p>And you can step back to the previous one with (considering, that your previous branches name was <em>master</em>):</p>
+<pre><code class="language-conf"><code><div>$ git checkout master
+</div></code></code></pre>
+<p>You can see what branches exist in your project, and what is currently checked out with:</p>
+<pre><code class="language-conf"><code><div>$ git branch
+</div></code></code></pre>
+<p>What is currently checked out will have a * before its name, and in most terminals, it will be colored to green aswell.</p>
+<p><strong>IMPORTANT</strong>:<br>
+When you use the <strong>git checkout</strong> command, the files in your file system are changed. Your files will be reverted,
+to look like they did, when you last committed on that branch. If you switch back to another branch, your files will
+be (obviously) changed again, to look like they did when you last committed on that branch.</p>
+<p>When you make a new branch, the line of development, and all files in your project are completely the same
+as in the branch that was checked out, when you ran the <strong>git branch</strong> command. However, when you make a new commit
+now in your new branch, only that branch will be updated, that is currently checked out. Therefore, branches can be used
+to make changes in your project, without affecting your main line of development. The main line of development is usually found
+in the <em>master</em> branch.</p>
+<p>A branch can be deleted with the following command:</p>
+<pre><code class="language-conf"><code><div>$ git branch -d name_of_you_branch
+</div></code></code></pre>
+<p>By default, git will only let you delete your branch, if it is fully merged. This way, if you
+delete your branch, you will loose no information, because every commit is already present in some
+other branch. However, if you wish to delete your branch anyway, you can do so, by capitalizing the d:</p>
+<pre><code class="language-conf"><code><div>$ git branch -D name_of_you_branch
+</div></code></code></pre>
+<h3 id="use-cases-of-branches">Use cases of branches</h3>
+<p>Branches are great so lets see some examples of using them.</p>
+<h4 id="making-a-new-branch-out-of-a-previous-commit">Making a new branch out of a previous commit</h4>
+<p>You can checkout not just branches, but commits aswell. For this you need the commit ID, which can be found by running
+the following command (hit q to exit the log):</p>
+<pre><code class="language-conf"><code><div>$ git log
+</div></code></code></pre>
+<p>The output will consists of similar entries:</p>
+<pre><code class="language-conf"><code><div>commit 172e767c46c08174c63b6b54e498301470d291b2 (origin/master, master)
+Author: Tam&lt;C3&gt;&lt;A1&gt;s Rig&lt;C3&gt;&lt;B3&gt; &lt;tamas.rigo@econengineering.com&gt;
+Date:   Thu Sep 10 10:01:05 2020 +0200
+
+    Bugfix: lengths variable is calulcated after filtering groupings
+</div></code></code></pre>
+<p>The stuff after the <em>commit</em> is the commit ID, in this case, it is: 172e767c46c08174c63b6b54e498301470d291b2.
+You can also copy this from VS Code's Gitlens extension, by clicking here:</p>
+<p><img src="file:///d:\Rigo_Tamas\git_for_dummies\figures\gitlens_copy_commit_id.PNG" alt="image" title="copy commit ID"></p>
+<p>Running the following command will change you files in your working directory to be just like they were,
+when you made the commit, and then it will make a new branch and step into it:</p>
+<pre><code class="language-conf"><code><div>$ git checkout 172e767c46c08174c63b6b54e498301470d291b2
+$ git branch new_dev_branch
+$ git checkout new_dev_branch
+</div></code></code></pre>
+<p>If you now make commits, then your work will be based off of the commit that you checked out.
+So as you see, using this technique you can make a new line of development from a previous
+state of your project.</p>
+<h4 id="making-a-branch-to-save-work-before-a-rebase-or-reset">Making a branch to save work before a rebase or reset</h4>
+<p>You can make a new branch to save your work before you do a rebase, or a reset. This is useful,
+because in case you mess something up, you can easily revert back to the original version. So before
+doing somethin risky, first do:</p>
+<pre><code class="language-conf"><code><div>$ git branch backup_to_be_safe
+</div></code></code></pre>
+<h4 id="adding-a-single-commit-from-another-branch-to-you-current-branch">Adding a single commit from another branch to you current branch</h4>
+<p>You can add a single commit from one branch to another, using the cherry pick command.
+For this, you need the commit ID of the commit, that you wish to integrate in your branch.
+The following commands, will add the commit with id:172e767c46c08174c63b6b54e498301470d291b2
+to the branch named: <em>master</em>.</p>
+<pre><code class="language-conf"><code><div>$ git checkout master
+$ git cherry-pick 172e767c46c08174c63b6b54e498301470d291b2
+</div></code></code></pre>
+<h4 id="merging-changes-from-one-branch-to-another">Merging changes from one branch to another</h4>
+<p>It is quite common, to have the main line of development on the master branch, and your current
+development on some other branch, that is based off of a commit from the master branch. You do your work
+in this development branch, and after you are done, and everything looks good, you migrate these changes into
+the master branch with a merge. Merging the changes from the branch <em>dev</em> to the branch <em>master</em> can be done so:</p>
+<pre><code class="language-conf"><code><div>$ git checkout master
+$ git merge dev
+</div></code></code></pre>
+<p>See: <a href="#merge-conflicts">Merge conflicts</a> on how to resolve merge a conflict, in case there is one.</p>
+<h2 id="remote-tracking-branches">Remote tracking branches</h2>
+<p>You can always inspect the current state of a remote branch without actually pulling in the changes from the remote repo.
+This can be done with the <strong>git fetch</strong> command and with the so called remote tracking branches. A remote tracking branch, is
+a branch in your local repository. The difference between a remote tracking branch, and a normal branch is, that you can not
+modify a remote tracking branch with commits explicitly. They are automatically modified when you push, pull or fetch from your
+remote repository. When you push, pull or fetch, the remote tracking branch gets updated to the current status of the remote repository's
+branch. Thats why they are called remote tracking branches, because they track your remote branches current status. A remote tracking branch
+has always a slash (/) in its name. The stuff before the / is the name of the remote repository and the stuff after the / is the branch that it
+tracks. For example, the following can be a remote tracking branch: <em>origin/master</em>.</p>
+<p>You can list your remote tracking branches with:</p>
+<pre><code class="language-conf"><code><div>$ git branch -r
+</div></code></code></pre>
+<p>Or you can list all of your branches with:</p>
+<pre><code class="language-conf"><code><div>$ git branch -a
+</div></code></code></pre>
+<p>If you use the <strong>git branch -a</strong> command, then the remote tracking branches will have a <em>remotes/</em> string before them.</p>
+<p><strong>IMPORTANT</strong><br>
+The remote tracking branch is not actually the remote repository. It is merely a local branch with special properties.</p>
+<h3 id="using-remote-tracking-branches">Using remote tracking branches</h3>
+<p>A common theme of using remote tracking branches is to first use <strong>git fetch --all</strong> to update your remote tracking branches,
+and then to compare your local branch with its corresponding remote tracking branch. So for example:</p>
+<pre><code class="language-conf"><code><div>$ git fetch --all
+$ git diff master origin/master
+</div></code></code></pre>
+<p>What git pull does is actaully a fetch followed by a merge:</p>
+<pre><code class="language-conf"><code><div>$ git checkout master
+$ git fetch origin
+$ git merge origin/master
+</div></code></code></pre>
+<p>Is the same as:</p>
+<pre><code class="language-conf"><code><div>$ git checkout master
+$ git pull origin master
+</div></code></code></pre>
+<h3 id="hard-reset-with-remote-tracking-branches">Hard reset with remote tracking branches</h3>
+<p>It is also common, to do a hard reset with a remote tracking branch. A hard reset wipes your whole commit history, throws away
+every staged and unstaged changes, and makes your branch exactly the same as the one that you specified. As you can see, a hard reset
+has a destructive nature, and should only be done, when you know for sure, that you want to throw away everything in your local branch,
+and make it look just like your remote branch.</p>
+<p>Before doing a hard reset it is wise to first create a new branch from your current one, to save your work just in case you might
+need it later:</p>
+<pre><code class="language-conf"><code><div>$ git checkout master
+$ git branch my_saved_work
+</div></code></code></pre>
+<p>After this you can make a hard reset. The following makes your local master branch just as the remote's master branch:</p>
+<pre><code class="language-conf"><code><div>$ git checkout master
+$ git fetch --all
+$ git reset --hard origin/master
+</div></code></code></pre>
+<p>The <strong>git fetch</strong> command before the <strong>git reset --hard</strong> is very important. If you don't do this, then your origin/master branch will not
+be updated before the reset happens, and it will not be resetted to the current state of the remote repository's master branch. It will be
+resetted to the state it was in, when you last pulled pushed or fetched from it.</p>
+<p>This command is useful for example after you completely rebase your project (for example to rename old commit messagess), and you push forcefully
+to the remote repo. After you pushed forcefully (with <strong>git push -f</strong>), your colleages will need to update their project with a hard reset.</p>
+<h1 id="basic-commands">Basic commands</h1>
+<p>Initialize an empty repository, to start tracking your project:</p>
+<pre><code class="language-conf"><code><div>$ git init
+</div></code></code></pre>
+<p>Initialize a bare repository, where you can push your local repository to:</p>
+<pre><code class="language-conf"><code><div>$ git init --bare
+</div></code></code></pre>
+<p>Display the status of you current project. Shows which files are in the staging area
+ready to be committed, shows which files have been modified, and several other information
+aswell.</p>
+<pre><code class="language-conf"><code><div>$ git status
+</div></code></code></pre>
+<p>Get a quick look at the commit history of your project. Using the --oneline option
+the commits are listed line by line, making the log easier on the eye. However,
+there are a lot of optios for this command, so see the official documentation if you
+need something special.</p>
+<pre><code class="language-conf"><code><div>$ git log --oneline
+</div></code></code></pre>
+<p>Add <em>name_of_file</em> to the staging area.</p>
+<pre><code class="language-conf"><code><div>$ git add name_of_file
+</div></code></code></pre>
+<p>Add every file to the staging area.</p>
+<pre><code class="language-conf"><code><div>$ git add -A
+</div></code></code></pre>
+<p>Add new files and modified files to the staging area, but don't add deleted ones.</p>
+<pre><code class="language-conf"><code><div>$ git add .
+</div></code></code></pre>
+<p>Remove <em>name_of_file</em> from the staging area.</p>
+<pre><code class="language-conf"><code><div>$ git reset name_of_file
+</div></code></code></pre>
+<p>Remove all files from staging area</p>
+<pre><code class="language-conf"><code><div>$ git reset
+</div></code></code></pre>
+<p>Commit your changes</p>
+<pre><code class="language-conf"><code><div>$ git commit -m &quot;your commit message&quot;
+</div></code></code></pre>
+<p>If you commit without the -m argument, git will open your default text editor
+and will ask you to specify your commit message there. After saving and closing
+this file, the commit will be made. See: <a href="#set-default-editor">Set deafult editor</a>
+to set your default editor for git.</p>
+<p>Add a remote repository named origin to your local one, so you can push pull data
+from your local repository to / from the remote repository. The name origin can be something else
+aswell, it will be used later on to refer to this remote branch. The convention is to name it origin.</p>
+<pre><code class="language-conf"><code><div>$ git remote add origin {URL}
+</div></code></code></pre>
+<p>where {URL} is the URL to your remote (bare) repository. This can be a http
+link, or an ssh address.</p>
+<p>View your remote repositories:</p>
+<pre><code class="language-conf"><code><div>$ git remote -v
+</div></code></code></pre>
+<h1 id="advanced-git-commands">&quot;Advanced&quot; git commands</h1>
+<h2 id="changing-commit-history-interactive-rebase">Changing commit history: interactive rebase</h2>
+<h3 id="before-rebasing">Before rebasing</h3>
+<p>Before doing the rebase make a new fresh branch from your branch
+that you wish to rebase:</p>
+<pre><code class="language-conf"><code><div>$ git checkout -b some_new_branch_name
+</div></code></code></pre>
+<p>You should do your rebase here, because if something goes wrong, you
+will not loose your original branch, and you can switch back to it,
+delete the new branch, make another one from the original, and try again.</p>
+<p>Changing the commit history, commit messages, and squashing more commits
+into one commit can be done with an interactive rebase:</p>
+<h3 id="interactive-rebase">Interactive rebase</h3>
+<pre><code class="language-conf"><code><div>$ git rebase -i HEAD~{number}
+</div></code></code></pre>
+<p>where {number} is a number that specifies how many commits you wish to
+edit. For example, the following command will list the last 3 commits:</p>
+<pre><code class="language-conf"><code><div>$ git rebase -i HEAD~3
+</div></code></code></pre>
+<p>What you will see after this command is something like this:</p>
+<pre><code class="language-conf"><code><div>pick fedce4f Added sorting for groups, and changed sim channel names for component test
+pick 5a69ac4 can now scale curves based on json config
+pick 172e767 Bugfix: lengths variable is calulcated after filtering groupings
+
+# Rebase 61230df..172e767 onto 61230df (3 commands)
+#
+# Commands:
+# p, pick &lt;commit&gt; = use commit
+# r, reword &lt;commit&gt; = use commit, but edit the commit message
+# e, edit &lt;commit&gt; = use commit, but stop for amending
+# s, squash &lt;commit&gt; = use commit, but meld into previous commit
+# f, fixup &lt;commit&gt; = like &quot;squash&quot;, but discard this commit's log message
+# x, exec &lt;command&gt; = run command (the rest of the line) using shell
+# b, break = stop here (continue rebase later with 'git rebase --continue')
+# d, drop &lt;commit&gt; = remove commit
+# l, label &lt;label&gt; = label current HEAD with a name
+# t, reset &lt;label&gt; = reset HEAD to a label
+# m, merge [-C &lt;commit&gt; | -c &lt;commit&gt;] &lt;label&gt; [# &lt;oneline&gt;]
+# .       create a merge commit using the original merge commit's
+# .       message (or the oneline, if no original merge commit was
+# .       specified). Use -c &lt;commit&gt; to reword the commit message.
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#
+# Note that empty commits are commented out
+</div></code></code></pre>
+<p>If you run your rebase, and see a different commit history than what you see in
+your git log, then this is most likely because of merge commits. These are
+treated somehow separately when rebasing. If you wish to see and work with
+the commit history as you see when typing <strong>git log</strong> then you need to use the
+--rebase-merges flag:</p>
+<pre><code class="language-conf"><code><div>$ git rebase -i --rebase-merges HEAD~3
+</div></code></code></pre>
+<p>When using this, the <em>label onto</em> and <em>reset onto</em> lines should not be touched or
+moved.</p>
+<p>The comments in the description of the rebase file describe what one can do. I will give
+a brief description of the most useful ones, and the ones that I have used
+before.</p>
+<ul>
+<li>pick uses the commit, and does not change its contents</li>
+<li>reword uses the commit, and lets you edit the commit message of that commit</li>
+<li>fixup (or squash) will use the commit and will meld this commit into the previous commit.
+If multiple fixups follow each other, than all of these are melded into the
+first one that is a pick or reword one. The previous commit is alway on top
+of the one in question. Therefore every fixup that is under a pick will be melded into
+the first pick on top of them. Using this two or more commits that should be a single commit
+can be made a single commit.</li>
+<li>exec lets you execute a command using the shell. Personally I have used this instead of
+the reword option to rename my commits. This is because you can edit every commits name
+beforehand in your editor, and then let the rebase run on its own when you are finished.
+If you use reword, than you need to sit in front of your keyboard while the rebase is happening,
+and wait for you editor to open to edit the commit message. This can take a long time when you
+are doing rebases with a lot of commits.</li>
+</ul>
+<p>I will give you an example of a rebase that I have done:</p>
+<pre><code class="language-conf"><code><div>pick bbb5177 Commits that should be together, with a more descriptive name 1
+exec git commit --amend -m &quot;A commit message that is more descriptive&quot;
+fixup f5750a9 Commits that should be together, with a more descriptive name 2
+fixup f14b4e0 Commits that should be together, with a more descriptive name 3
+</div></code></code></pre>
+<p>Here the commits with IDs: f5750a9, f14b4e0 will be melded into the commit with
+ID: bbb5177. These three commits will become one, and their commit message will be:
+<em>A commit message that is more descriptive</em>.</p>
+<p>You can find my rebase file when I had to rebase the commit history of the dummy
+development here:<br>
+/proj/cae_crash/dummies/800_DUMMY_STORAGE/git_rebase_template_file/git_rebase_template_rebase_merges.log</p>
+<p>I ran the following command, and then copy pasted the contents of this file
+to the rebase file that git opened for me in my editor:</p>
+<pre><code class="language-conf"><code><div>git rebase -i --rebase-merges HEAD~267
+</div></code></code></pre>
+<h3 id="after-the-rebase">After the rebase</h3>
+<p>After the rebase you need to check if all of your files' contents are the same as before the rebase.
+This can be easily done in VS Codes Gitlens extension. If your branches name before the rebase was
+<em>master</em> and your branches name after the rebase is <em>after_rebase</em>, then you need to click the
+following things in your VS Code Gitlens:</p>
+<p>1. Click on compare master</p>
+<p><img src="file:///d:\Rigo_Tamas\git_for_dummies\figures\gitlens_compare_branches_1.png" alt="image" title="click on compare master"></p>
+<p>2. Click on compare with after_rebase</p>
+<p><img src="file:///d:\Rigo_Tamas\git_for_dummies\figures\gitlens_compare_branches_2.png" alt="image" title="click on compare master"></p>
+<p>3. Check if there are files changed</p>
+<p><img src="file:///d:\Rigo_Tamas\git_for_dummies\figures\gitlens_compare_branches_3.png" alt="image" title="click on compare master"></p>
+<p>You need to see no files changed, otherwise there are differences between files in
+the original branch, and the one after the rebase.</p>
+<p>you can achieve the same with the following command:</p>
+<pre><code class="language-conf"><code><div>$ git diff --name-status master..after_rebase
+</div></code></code></pre>
+<p>Where <em>master</em> is the name of the branch before the rebase, and <em>after_rebase</em>
+is the name of the branch that you made the rebase on.</p>
+<p>If this command returns nothing, then you are good, and your files have exactly the same content
+after the rebase as they had before the rebase. However, if this command returns something, then
+there is a change in an existing file, a new file, or a deleted file between the two branches.
+In this case, you need to fix this issue, either by running the rebase again with a different
+configuration, or by fixing this issue yourself by modifying the files so that they are identical.</p>
+<h2 id="adding-further-changes-to-last-commit">Adding further changes to last commit</h2>
+<p>Consider the following scenario: you just committed your changes,
+but you realised that you need to add some more further changes
+to the same file(s). What you could do is make a new commit,
+but this would create an unclean history. Instead you can do the
+following:<br>
+Make the changes in your file(s) that you wish to make. Add these
+files to the staging area with <strong>git add</strong>. After that use the following
+command to update you last commit with these changes:</p>
+<pre><code class="language-conf"><code><div>$ git commit --amend
+</div></code></code></pre>
+<p>Your default editor will open, and you can change your commit message
+if you want to. Save and close the file to conclude your commit.
+If you don't want to change your commit message use this command:</p>
+<pre><code class="language-conf"><code><div>$ git commit --amend --no-edit
+</div></code></code></pre>
+<p>If you have already pushed your changes, and you do an amend, then
+you will need to force push the new amended commit. This is generally
+a bad practice, because if people have already pulled your work, then force pushing
+will cause a lot of problems. However, if no-one has yet pulled your changes,
+then it is OK to do this.</p>
+<h2 id="discard-last-n-commits">Discard last n commits</h2>
+<p>You can discard your last n number of commits with the following command:</p>
+<pre><code class="language-conf"><code><div>$ git reset HEAD~n
+</div></code></code></pre>
+<p>It is important, that this only discards the commits, but the changes that were made to the file(s)
+remain, so you can commit them again if you want</p>
+<p>This is useful for example, when you commit a lot of commits in a series, but later on you
+realize, that it would be more meaningful, if they were inside a single commit. You can then
+use the <strong>git reset HEAD~n</strong> command to discard all those commits, and then use <strong>git add</strong>
+and <strong>git commit</strong> again to commit all of those changes that were previously in n number of commits.</p>
+<h1 id="set-default-editor">Set default editor</h1>
+<p>Setting you default editor in git is useful, because some commands will open
+files in your default editor, and ask you to change stuff there. Two commands
+that do this and come to my mind are:</p>
+<pre><code class="language-conf"><code><div>$ git commit
+$ git rebase -i
+</div></code></code></pre>
+<p>See more on git rebase -i in <a href="#changing-commit-history-interactive-rebase">Changing commit history: interactive rebase</a></p>
+<p>To set your default editor use:</p>
+<pre><code class="language-conf"><code><div>$ git config --global core.editor &quot;{path_to_your_editor.exe} --wait&quot;
+</div></code></code></pre>
+<p>Where {path_to_your_editor.exe} is the path to the exe file of you editor.
+If you use VS Code, then first try out this command in you terminal:</p>
+<pre><code class="language-conf"><code><div>$ code
+</div></code></code></pre>
+<p>If VS Code opens, then you can set your global editor to be VS Code with:</p>
+<pre><code class="language-conf"><code><div>$ git config --global core.editor &quot;code --wait&quot;
+</div></code></code></pre>
+<h2 id="set-default-merge-tool-and-diff-tool">Set default merge tool and diff tool</h2>
+<p>When you come into merge conflicts (<a href="#merge-conflicts">merge conflicts</a>)
+then it is helpful to use a merge tool to resolve the conflict. To set
+VS Code as you default merge tool and diff tool you need to edit you gitconfig.
+To edit you gitconfig use:</p>
+<pre><code class="language-conf"><code><div>$ git config --global -e
+</div></code></code></pre>
+<p>This will open up your default editor, and you can edit your gitconfig. To see
+how to change your default editor see: <a href="#set-default-editor">Set deafult editor</a>.
+After your gitconfig file is open, add the following to this file, then save and close it:</p>
+<pre><code class="language-conf"><code><div>[merge]
+	tool = vscode
+[mergetool &quot;vscode&quot;]
+	cmd = code --wait $MERGED
+[diff]
+	tool = vscode
+[difftool &quot;vscode&quot;]
+	cmd = code --wait --diff $LOCAL $REMOTE
+</div></code></code></pre>
+<h1 id="merge-conflicts">Merge conflicts</h1>
+<p>When you merge two branches, or pull from your remote branch, a merge conflict can occur.
+This occurs, when the branch you try to merge (origin/master in case of a pull)
+has modifications in a file, on the same place where your current branches file
+has also some modifications. In this scenario, git can not decide on its own,
+which modifications to keep and which to discard, so these have to be dealt with
+manually. A merge conflict will cause a warning message like this:</p>
+<pre><code class="language-conf"><code><div>Auto-merging make_config_for_pypptx_for_single_folder.py
+CONFLICT (content): Merge conflict in make_config_for_pypptx_for_single_folder.py
+Automatic merge failed; fix conflicts and then commit the result.  
+</div></code></code></pre>
+<p>Most of the time, you want to use a merge tool to deal with this issue. I will talk about
+how to use VS Codes merge tool, but you can use any you like. See <a href="#set-default-merge-tool-and-diff-tool">set merge tool</a>
+on how to set up your default merge tool. Run this command after you have set up your default merge tool:</p>
+<pre><code class="language-conf"><code><div>$ git mergetool
+</div></code></code></pre>
+<p>After you run this command, git will open your mergetool (for me it is VS Code), and you will see
+something like this for all of the places, that have a conflict:</p>
+<p><img src="file:///d:\Rigo_Tamas\git_for_dummies\figures\merge_conflict.PNG" alt="image" title="Merge conflict"></p>
+<p>You need to click on one of the following in all of the conflicts (in the picture above, there are two)</p>
+<ul>
+<li>Accept Current Change</li>
+<li>Accept Incoming Change</li>
+<li>Accept Both Changes</li>
+</ul>
+<p>VS Code says which change is the current change, and which is the incoming one in the green/blue line
+that starts with &lt;&lt;&lt;&lt; or &gt;&gt;&gt;&gt;. The incoming change is the one, that comes from the branch that you are
+trying to merge. If you did a pull, the incoming change comes from the origin/master remote tracking branch.
+In other words, it comes from your remote branch and this change was made by one of your colleagues. The current
+change refers to your current branches state, that was checked out when you ran the pull / merge command.
+If you click on Accept Current Change or Accept Incoming Change, only that one will be kept. If you click on
+Accept Both Changes, git will keep both changes, and they will usually be put on two separate lines, one after
+the other. If you happen to click on the wrong button, Ctrl+z works as expected.</p>
+<p>After you have clicked all of the conflicts, save the file, and close it in your editor. After this, you need to
+commit the merge that you have just done. The merged file(s) are already in the staging area. You can run one of the standard
+commit commands:</p>
+<pre><code class="language-conf"><code><div>$ git commit
+$ git commit --no-edit
+$ git commit -m &quot;specify you own commit message&quot;
+</div></code></code></pre>
+<p>If you use the <strong>git commit --no-edit</strong> version, then git will use the default commit
+message for a merge, which is something like:</p>
+<pre><code><code><div>[test2 f51eb83] Merge branch 'test1' into test2
+</div></code></code></pre>
+
+    </body>
+    </html>
